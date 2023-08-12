@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const secretKey = "Tejas@5727";
+const secretKey = process.env.JWTSECRETKET;
 const bcrypt = require("bcrypt");
 
 //This Method Use For GenerateToken

@@ -1,11 +1,16 @@
 const nodemailer = require('nodemailer')
 
+const host = process.env.EMAILHOST
+const port = process.env.EMAILPORT
+const user = process.env.EMAILUSER
+const pass =  process.env.EMAILPASSWORD
+
 const transporter = nodemailer.createTransport({
-    host: "mail.gmx.com",
-    port:587,
+    host: host,
+    port:port,
     auth: {
-      user: 'open_store@gmx.com',
-      pass: 'Tejas@5727'
+      user: user,
+      pass: pass
     }
   });
 
