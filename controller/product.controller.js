@@ -13,6 +13,24 @@ async function getProducts(req, res) {
 }
 
 
+
+
+async function getSingleProductDetails(req, res) {
+  try {
+    const productId = req.params.id;
+    const foundProduct = await ProductModel.findById(productId,{__v: 0 });
+    if (foundProduct) {
+      res.status(200).json(foundProduct);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching Product", error: error.message });
+  }
+}
+
   async function addNewProduct(req, res) {
     try {
       let imageUrl;
@@ -48,4 +66,4 @@ async function getProducts(req, res) {
     }
   }
 
-  module.exports = {getProducts,addNewProduct}
+  module.exports = {getProducts,addNewProduct,getSingleProductDetails}
