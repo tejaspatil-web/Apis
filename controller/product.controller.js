@@ -10,6 +10,24 @@ async function getProducts(req, res) {
   }
 }
 
+
+async function getProductById(req,res){
+  try{
+    const productId = req.params.id;
+    const isFoundproduct = await ProductModel.findById(productId, {
+      __v: 0,
+    });
+    if (isFoundproduct) {
+      res.status(200).json(isFoundproduct);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error){
+    res.json({massage:error})
+  }
+}
+
+
 async function addNewProduct(req, res) {
   try {
     let imageUrl;
@@ -46,4 +64,4 @@ async function addNewProduct(req, res) {
   }
 }
 
-module.exports = { getProducts, addNewProduct };
+module.exports = { getProducts, addNewProduct ,getProductById};
