@@ -1,4 +1,3 @@
-
 const cloudinary = require("../configuration/cloudinary");
 const Models = require("../model/user.model");
 
@@ -15,7 +14,10 @@ async function allUsers(req, res) {
 async function singleUser(req, res) {
   try {
     const userId = req.params.id;
-    const foundUser = await Models.User.findById(userId,{ password: 0, __v: 0 });
+    const foundUser = await Models.User.findById(userId, {
+      password: 0,
+      __v: 0,
+    });
     if (foundUser) {
       res.status(200).json(foundUser);
     } else {
@@ -45,41 +47,64 @@ async function addNewUser(req, res) {
       });
     }
 
-    const newUser = new Models.User({
-      name: name,
-      email: email,
-      password: password,
-      number: number,
-      imageUrl: imageUrl,
-      imageId: imageId,
-    });
+    const isEmailExits = (
+      await Models.User.find({}, { password: 0, __v: 0 })
+    ).findIndex((element) => element.email === email);
 
-    await newUser.save();
-    res.send("User Saved Successfully");
+    if (isEmailExits > -1) {
+      res
+        .status(200)
+        .send(
+          "This Email Id Already Registered Please Use deferent Email Id..!"
+        );
+    } else {
+      const newUser = new Models.User({
+        name: name,
+        email: email,
+        password: password,
+        number: number,
+        imageUrl: imageUrl,
+        imageId: imageId,
+      });
+
+      await newUser.save();
+      res.send("User Saved Successfully");
+    }
   } catch (error) {
-    res.send(error);
+    res.sendStatus(400, error);
   }
 }
 
 async function updateUser(req, res) {
   try {
-    let {name,email,password,number,image,imageId}= await req.body
+    let { name, email, password, number, image, imageId } = await req.body;
     const userId = await req.params.id;
 
-    if(image && imageId){
-        await cloudinary.uploader.upload(image,{ public_id: imageId }, (error, result) => {
+    if (image && imageId) {
+      await cloudinary.uploader.upload(
+        image,
+        { public_id: imageId },
+        (error, result) => {
           if (result) {
             image = result.url;
             imageId = result.public_id;
           } else if (error) {
             res.sendStatus(401, error);
           }
-        });
-      }
+        }
+      );
+    }
 
     await Models.User.findOneAndUpdate(
       { _id: userId },
-      { name: name, email: email, password: password, number: number,imageUrl:image,imageId:imageId },
+      {
+        name: name,
+        email: email,
+        password: password,
+        number: number,
+        imageUrl: image,
+        imageId: imageId,
+      },
       { new: true } // This option returns the updated document
     )
       .then((updatedUser) => {
@@ -100,20 +125,20 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
   try {
     const userId = await req.params.id;
-    const data = await Models.User.findById(userId); 
-   await Models.User.deleteOne({ _id: userId })
-      .then(async(result) => {
-        if (result.deletedCount > 0) {   
-    // Delete Image From Cloudinary
-    if(data.imageUrl && data.imageId){
-      await cloudinary.uploader.destroy(data.imageId, (error, result) => {
-        if (result) {
-          console.log( result);
-        } else if (error) {
-          res.sendStatus(401, error);
-        }
-      });
-    }
+    const data = await Models.User.findById(userId);
+    await Models.User.deleteOne({ _id: userId })
+      .then(async (result) => {
+        if (result.deletedCount > 0) {
+          // Delete Image From Cloudinary
+          if (data.imageUrl && data.imageId) {
+            await cloudinary.uploader.destroy(data.imageId, (error, result) => {
+              if (result) {
+                console.log(result);
+              } else if (error) {
+                res.sendStatus(401, error);
+              }
+            });
+          }
           res.status(200).json({ message: "User deleted successfully" });
         } else {
           res.status(400).json({ message: "User not found or not deleted" });
