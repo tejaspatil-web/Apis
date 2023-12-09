@@ -17,7 +17,8 @@ async function userLogin(req, res) {
       return res.status(400).send({ message: "Incorrect password!" });
     }
     const token = generateToken({ email: email, password: password });
-    res.send({ message: "Logged in successfully!", accessToken: token });
+    res.send({ message: "Logged in successfully!", userId:
+    user.id,accessToken: token }); 
   } catch (error) {
     res.status(500).send(error);
   }
