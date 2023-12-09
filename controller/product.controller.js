@@ -1,32 +1,14 @@
-const cloudinary = require("../configuration/cloudinary");
-const ProductModel = require("../model/product.model");
+import Product from "../model/product.model.js";
+import cloudinary from "../configuration/cloudinary.js";
 
 async function getProducts(req, res) {
   try {
-    const Products = await ProductModel.find({}, { __v: 0 });
+    const Products = await Product.find({}, { __v: 0 });
     res.json(Products);
-  } catch (err) {
-    res.json({ massage: err });
+  } catch (error) {
+    res.json({ message: error });
   }
 }
-
-
-async function getProductById(req,res){
-  try{
-    const productId = req.params.id;
-    const isFoundproduct = await ProductModel.findById(productId, {
-      __v: 0,
-    });
-    if (isFoundproduct) {
-      res.status(200).json(isFoundproduct);
-    } else {
-      res.status(404).json({ message: "Product not found" });
-    }
-  } catch (error){
-    res.json({massage:error})
-  }
-}
-
 
 async function addNewProduct(req, res) {
   try {
@@ -46,7 +28,7 @@ async function addNewProduct(req, res) {
       });
     }
 
-    const newProduct = new ProductModel({
+    const newProduct = new Product({
       productDescription: description,
       productPrice: price,
       productImage: imageUrl,
@@ -64,4 +46,4 @@ async function addNewProduct(req, res) {
   }
 }
 
-module.exports = { getProducts, addNewProduct ,getProductById};
+export { getProducts, addNewProduct };

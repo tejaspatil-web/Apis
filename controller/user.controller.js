@@ -1,9 +1,9 @@
-const cloudinary = require("../configuration/cloudinary");
-const Models = require("../model/user.model");
+import cloudinary from "../configuration/cloudinary.js";
+import { User } from "../model/user.model.js";
 
 async function allUsers(req, res) {
   try {
-    const users = await Models.User.find({}, { password: 0, __v: 0 });
+    const users = await User.find({}, { password: 0, __v: 0 });
 
     res.json(users);
   } catch (err) {
@@ -14,7 +14,7 @@ async function allUsers(req, res) {
 async function singleUser(req, res) {
   try {
     const userId = req.params.id;
-    const foundUser = await Models.User.findById(userId, {
+    const foundUser = await User.findById(userId, {
       password: 0,
       __v: 0,
     });
@@ -48,7 +48,7 @@ async function addNewUser(req, res) {
     }
 
     const isEmailExits = (
-      await Models.User.find({}, { password: 0, __v: 0 })
+      await User.find({}, { password: 0, __v: 0 })
     ).findIndex((element) => element.email === email);
 
     if (isEmailExits > -1) {
@@ -58,7 +58,7 @@ async function addNewUser(req, res) {
           "This Email Id Already Registered Please Use deferent Email Id..!"
         );
     } else {
-      const newUser = new Models.User({
+      const newUser = new User({
         name: name,
         email: email,
         password: password,
@@ -95,7 +95,7 @@ async function updateUser(req, res) {
       );
     }
 
-    await Models.User.findOneAndUpdate(
+    await User.findOneAndUpdate(
       { _id: userId },
       {
         name: name,
@@ -125,8 +125,8 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
   try {
     const userId = await req.params.id;
-    const data = await Models.User.findById(userId);
-    await Models.User.deleteOne({ _id: userId })
+    const data = await User.findById(userId);
+    await User.deleteOne({ _id: userId })
       .then(async (result) => {
         if (result.deletedCount > 0) {
           // Delete Image From Cloudinary
@@ -156,10 +156,4 @@ async function deleteUser(req, res) {
   }
 }
 
-module.exports = {
-  allUsers,
-  singleUser,
-  addNewUser,
-  updateUser,
-  deleteUser,
-};
+export { allUsers, singleUser, addNewUser, updateUser, deleteUser };

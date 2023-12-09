@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const secretKey = process.env.JWTSECRETKET;
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 
 //This Method Use For GenerateToken
 function generateToken(user) {
@@ -31,4 +31,4 @@ async function encryptPassword(req, res, next) {
   next();
 }
 
-module.exports = { generateToken, authentication, encryptPassword };
+export { generateToken, authentication, encryptPassword };

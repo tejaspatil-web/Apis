@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "prod": "node index.js"
+    "dev": "NODE_ENV=development nodemon index.js",
+    "preprod":"node index.js",
+    "prod": "node index.js",
+    "swagger-json": "node ./swagger/swagger.js"
   },
   "author": "tejas patil",
   "license": "ISC",
@@ -20,6 +23,11 @@
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.5.3",
     "nodemailer": "^6.9.4",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "path": "^0.12.7",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "url": "^0.11.3"
   }
 }

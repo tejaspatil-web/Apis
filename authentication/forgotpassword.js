@@ -1,11 +1,11 @@
-const UserModel = require("../model/user.model");
-const transporter = require("../configuration/nodemailer");
+import { User, UserForgotPassword, Otp } from "../model/user.model.js";
+import transporter from "../configuration/nodemailer.js";
 
 async function forgotPassword(req, res) {
   try {
     const email = await req.body.email;
     const otp = await req.otp;
-    const checkIsEmailExits = await UserModel.User.findOne({ email });
+    const checkIsEmailExits = await User.findOne({ email });
     if (checkIsEmailExits) {
       await transporter.sendMail({
         from: "open_store@gmx.com",
@@ -110,7 +110,7 @@ async function forgotPassword(req, res) {
 
 async function saveOtp(email, otp) {
   try {
-    const newOtp = UserModel.ForgotPassword({
+    const newOtp = UserForgotPassword({
       email: email,
       otp: otp,
     });
@@ -124,7 +124,7 @@ async function saveOtp(email, otp) {
 async function verifyOtp(req, res) {
   try {
     const { email, otp } = await req.body;
-    const otpData = await UserModel.ForgotPassword.findOne({ email, otp });
+    const otpData = await UserForgotPassword.findOne({ email, otp });
     if (!otpData) {
       return res
         .status(404)
@@ -132,11 +132,11 @@ async function verifyOtp(req, res) {
     } else if (otpData.used) {
       return res.status(404).send({ message: "This OTP is already used..!" });
     }
-    await Usermodel.Otp.findOneAndUpdate({ _id: otpData.id }, { used: true });
+    await Otp.findOneAndUpdate({ _id: otpData.id }, { used: true });
     res.status(200).send("verification successfully");
   } catch (error) {
     res.status(404).send({ message: "Some Internal Error!" });
   }
 }
 
-module.exports = { forgotPassword, verifyOtp };
+export { forgotPassword, verifyOtp };

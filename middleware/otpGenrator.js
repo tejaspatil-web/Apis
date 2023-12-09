@@ -1,13 +1,13 @@
 function generateOTP(req, res, next) {
-    var digits = "0123456789";
-    var otpLength = 4;
-    var otp = "";
-    for (let i = 1; i <= otpLength; i++) {
-      var index = Math.floor(Math.random() * digits.length);
-      otp = otp + digits[index];
-    }
-    req.otp = otp;
-    next();
+  var digits = "0123456789";
+  var otpLength = 4;
+  var otp = "";
+  for (let i = 1; i <= otpLength; i++) {
+    var index = Math.floor(Math.random() * digits.length);
+    otp = otp + digits[index];
   }
+  req.otp = otp;
+  next();
+}
 
-  module.exports = generateOTP
+export default generateOTP;
