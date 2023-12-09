@@ -1,15 +1,16 @@
 import jwt from "jsonwebtoken";
-const secretKey = process.env.JWTSECRETKET;
 import bcrypt from "bcrypt";
 
 //This Method Use For GenerateToken
 function generateToken(user) {
+  const secretKey = process.env.JWTSECRETKET;
   const token = jwt.sign(user, secretKey, { expiresIn: "1h" });
   return token;
 }
 
 //This Method Use For VerifyToken
 function authentication(req, res, next) {
+  const secretKey = process.env.JWTSECRETKET;
   const token = req.headers["access-token"];
   if (token == null) {
     return res.sendStatus(401);
