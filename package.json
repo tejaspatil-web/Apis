@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "preprod":"node index.js",
+    "dev": "nodemon index.js",
     "prod": "node index.js",
     "swagger-json": "node ./swagger/swagger.js"
   },
