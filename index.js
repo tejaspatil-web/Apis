@@ -34,6 +34,7 @@ app.use("/api/product", productRoute);
 
 // Check if the environment is set to development
 const npmLifecycleEvent = process.env.npm_lifecycle_event
+console.log(npmLifecycleEvent)
 if (npmLifecycleEvent === 'dev') {
 // This Route Use For Swagger Docs
   app.  use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
