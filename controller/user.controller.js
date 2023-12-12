@@ -52,11 +52,10 @@ async function addNewUser(req, res) {
     ).findIndex((element) => element.email === email);
 
     if (isEmailExits > -1) {
-      res
-        .status(200)
-        .send(
-          "This Email Id Already Registered Please Use deferent Email Id..!"
-        );
+      res.statusCode = 400
+      res.send(
+        "This Email Id Already Registered Please Use deferent Email Id..!"
+      );
     } else {
       const newUser = new User({
         name: name,
@@ -68,10 +67,12 @@ async function addNewUser(req, res) {
       });
 
       await newUser.save();
-      res.send("User Saved Successfully");
+       res.status=200
+       res.send({ message: "User Saved Successfully" });
     }
   } catch (error) {
-    res.sendStatus(400, error);
+    res.status=400
+    res.send({ error:error});
   }
 }
 
