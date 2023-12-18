@@ -7,7 +7,7 @@ async function forgotPassword(req, res) {
     const otp = await req.otp;
     const checkIsEmailExits = await User.findOne({ email });
     if (checkIsEmailExits) {
-      await transporter.sendMail({
+      await transporter().sendMail({
         from: "open_store@gmx.com",
         to: `${email}`,
         subject: "Password Reset",
@@ -97,9 +97,11 @@ async function forgotPassword(req, res) {
             `,
       });
       await saveOtp(email, otp);
-      res
-        .status(200)
-        .send("otp send successfully. this OTP is valid for 5 minutes only ");
+      const responseData = {
+        message: 'Success',
+        data:'otp send successfully. this OTP is valid for 5 minutes only'
+      }
+        res.status(201).json(responseData);
     } else {
       res.status(404).send({ message: "Email does not exits" });
     }
@@ -121,22 +123,38 @@ async function saveOtp(email, otp) {
   }
 }
 
-async function verifyOtp(req, res) {
+async function otpverification(req, res) {
   try {
     const { email, otp } = await req.body;
     const otpData = await UserForgotPassword.findOne({ email, otp });
     if (!otpData) {
       return res
         .status(404)
-        .send({ message: "OTP is expired or not valid..!" });
+        .json({ message: "OTP is expired or not valid..!" });
     } else if (otpData.used) {
-      return res.status(404).send({ message: "This OTP is already used..!" });
+      return res.status(404).json({ message: "This OTP is already used..!" });
     }
     await Otp.findOneAndUpdate({ _id: otpData.id }, { used: true });
-    res.status(200).send("verification successfully");
+    res.status(200).json("verification successfully");
   } catch (error) {
-    res.status(404).send({ message: "Some Internal Error!" });
+    res.status(404).json({ message: "Some Internal Error!" });
   }
 }
 
-export { forgotPassword, verifyOtp };
+async function updatepassword(req,res){
+const {otp,email,password} = await req.body
+try {
+  const otpData = await UserForgotPassword.findOne({ email, otp });
+  if (!otpData) {
+    return res
+      .status(404)
+      .send({ message: "OTP is expired or not valid..!" });
+  }
+  await User.findOneAndUpdate({ email }, { $set: { password: password } });
+  res.status(200).json({data:"password changed successfully"});
+} catch (error) {
+  res.status(404).send({ message: "Some Internal Error!" });
+}
+}
+
+export { forgotPassword, otpverification,updatepassword };

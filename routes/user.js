@@ -14,7 +14,7 @@ import {
 import OtpGenerator from "../middleware/otpGenrator.js";
 import userLogin from "../authentication/login.js";
 import { VerifyOtp, sendOTP } from "../authentication/otp.js";
-import { forgotPassword } from "../authentication/forgotpassword.js";
+import { forgotPassword ,otpverification,updatepassword} from "../authentication/forgotpassword.js";
 
 router.post("/login", userLogin);
 router.post("/create", encryptPassword, addNewUser);
@@ -25,6 +25,7 @@ router.delete("/delete/:id", authentication, deleteUser);
 router.post("/sendotp", OtpGenerator, sendOTP);
 router.post("/verifyotp", VerifyOtp);
 router.post("/forgotpassword", OtpGenerator, forgotPassword);
-router.post("/otpverification", forgotPassword);
+router.post("/otpverification", otpverification);
+router.post("/updatepassword", encryptPassword,updatepassword);
 
 export default router;
