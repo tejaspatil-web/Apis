@@ -1,11 +1,11 @@
-import transporter from "../configuration/nodemailer.js";
 import { Otp } from "../model/user.model.js";
+import transporter from "../configuration/nodemailer.js";
 
 async function sendOTP(req, res) {
   const email = await req.body.email;
   const otp = await req.otp;
   try {
-    await transporter.sendMail({
+    await transporter().sendMail({
       from: "open_store@gmx.com",
       to: `${email}`,
       subject: "Verification Email",
