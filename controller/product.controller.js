@@ -10,6 +10,25 @@ async function getProducts(req, res) {
   }
 }
 
+async function getSingleProduct(req, res) {
+  try {
+    const productId = req.params.id;
+    const foundProduct = await Product.findById(productId, {
+      password: 0,
+      __v: 0,
+    });
+    if (foundProduct) {
+      res.status(200).json(foundProduct);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching user", error: error.message });
+  }
+}
+
 async function addNewProduct(req, res) {
   try {
     let imageUrl;
@@ -46,4 +65,4 @@ async function addNewProduct(req, res) {
   }
 }
 
-export { getProducts, addNewProduct };
+export { getSingleProduct,getProducts, addNewProduct };
