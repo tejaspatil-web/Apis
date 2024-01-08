@@ -95,15 +95,9 @@ async function sendOTP(req, res) {
     `,
     });
     await saveOtp(email, otp);
-    res.statusCode = 200
-    res.send(
-      "otp send successfully. this OTP is valid for 5 minutes only"
-    );
+    res.status(200).json({message:"otp send successfully. this OTP is valid for 5 minutes only"})
   } catch (err) {
-    res.statusCode = 500
-    res.send(
-      "unable to send otp"
-    );
+    res.status(500).json({message:"unable to send otp"})
   }
 }
 
@@ -125,26 +119,14 @@ async function VerifyOtp(req, res) {
     const { email, otp } = await req.body;
     const otpData = await Otp.findOne({ email, otp });
     if (!otpData) {
-        res.statusCode = 404
-        res.send(
-          "OTP is expired or not valid..!"
-        );
+        res.status(404).json({message:"OTP is expired or not valid..!"})
     } else if (otpData.used) {
-      res.statusCode = 404
-      res.send(
-        "This OTP is already used..!"
-      );
+      res.status(404).json({message:"This OTP is already used..!"})
     }
     await Otp.findOneAndUpdate({ _id: otpData.id }, { used: true });
-    res.statusCode = 200
-    res.send(
-      "verification successfully"
-    );
+    res.status(200).json({message:"verification successfully"})
   } catch (error) {
-    res.statusCode = 404
-    res.send(
-      "Some Internal Error!"
-    );
+    res.status(404).json({message:"Some Internal Error!"})
   }
 }
 

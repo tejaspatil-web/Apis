@@ -7,19 +7,27 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import { createRequire } from "module";
 const requireType = createRequire(import.meta.url)
-const swaggerJson = requireType('./swagger/swagger-output.json')
 const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
+const swaggerJson = requireType('./swagger/swagger-output.json')
+import swaggerUi from "swagger-ui-express";
 import dotenv from "dotenv";
+// Dot env Configuration
 dotenv.config();
 const port = process.env.PORT || "3000";
-import swaggerUi from "swagger-ui-express";
+// User Rote
 import userRoute from "./routes/user.js";
+// Product Rote
 import productRoute from "./routes/product.js";
 import { connection } from "./connection/connection.js";
+import  configureCloudinary  from "./configuration/cloudinary.js";
 const dbConnection = new connection();
+// DB Connection
 dbConnection.dbConnection();
+
+// Cloudinary Configuration
+configureCloudinary()
 
 // Default Route
 app.get("/", (req, res) => {

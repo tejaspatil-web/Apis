@@ -1,4 +1,4 @@
-import cloudinary from "../configuration/cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 import { User } from "../model/user.model.js";
 
 async function allUsers(req, res) {
@@ -41,7 +41,7 @@ async function addNewUser(req, res) {
         if (result) {
           imageUrl = result.url;
           imageId = result.public_id;
-        } else if (error) {
+                  } else if (error) {
           res.sendStatus(401, error);
         }
       });
@@ -78,7 +78,8 @@ async function addNewUser(req, res) {
 
 async function updateUser(req, res) {
   try {
-    let { name, email, password, number, image, imageId } = await req.body;
+    let { name, email, password, number, imageId } = await JSON.parse(req.body.data);
+    let image = req.file.path
     const userId = await req.params.id;
 
     if (image && imageId) {
@@ -155,6 +156,17 @@ async function deleteUser(req, res) {
       .status(500)
       .json({ message: "Error deleting user", error: error.message });
   }
+}
+
+// Function to delete the image from the local path
+function deleteLocalImage(path) {
+  fs.unlink(path, (err) => {
+    if (err) {
+      console.error("Error deleting the file:", err);
+    } else {
+      console.log("File deleted successfully");
+    }
+  });
 }
 
 export { allUsers, singleUser, addNewUser, updateUser, deleteUser };
