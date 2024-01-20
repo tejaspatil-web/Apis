@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import dotenv from "dotenv";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
@@ -8,13 +9,12 @@ const __dirname = dirname(__filename);
 import { createRequire } from "module";
 const requireType = createRequire(import.meta.url)
 const app = express();
-app.use(cors());
+dotenv.config();
+app.use(cors({origin:[process.env.URL]}));
 app.use(bodyParser.json({ limit: "10mb" }));
 const swaggerJson = requireType('./swagger/swagger-output.json')
 import swaggerUi from "swagger-ui-express";
-import dotenv from "dotenv";
 // Dot env Configuration
-dotenv.config();
 const port = process.env.PORT || "3000";
 // User Rote
 import userRoute from "./routes/user.js";
@@ -22,8 +22,8 @@ import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
 import { connection } from "./connection/connection.js";
 import  configureCloudinary  from "./configuration/cloudinary.js";
-const dbConnection = new connection();
 // DB Connection
+const dbConnection = new connection();
 dbConnection.dbConnection();
 
 // Cloudinary Configuration
@@ -45,7 +45,7 @@ const npmLifecycleEvent = process.env.npm_lifecycle_event
 console.log(npmLifecycleEvent)
 if (npmLifecycleEvent === 'dev') {
 // This Route Use For Swagger Docs
-  app.  use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 } 
 
   // This Route Use For If There Is No Route Found
